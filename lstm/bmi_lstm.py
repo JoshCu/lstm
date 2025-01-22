@@ -357,10 +357,12 @@ class bmi_LSTM(Bmi):
         self.all_lstm_inputs.extend(self.cfg_train['static_attributes'])
         
         # Scaler data from the training set. This is used to normalize the data (input and output).
-        scaler_file = os.path.join(self.cfg_train['run_dir'], 'train_data', 'train_data_scaler.yml')
+        scaler_file = Path(self.cfg_train['run_dir']) / 'train_data' / 'train_data_scaler.yml'
 
         with open(scaler_file, 'r') as f:
             scaler_data = yaml.safe_load(f)
+
+        self.train_data_scaler = scaler_data
 
         self.attribute_means = scaler_data.get('attribute_means', {})
         self.attribute_stds = scaler_data.get('attribute_stds', {})
@@ -372,16 +374,16 @@ class bmi_LSTM(Bmi):
 
         """Mean and standard deviation for the inputs and LSTM outputs""" 
 
-        self.out_mean = self.train_data_scaler['xarray_feature_center'][self.cfg_train['target_variables'][0]].values
-        self.out_std = self.train_data_scaler['xarray_feature_scale'][self.cfg_train['target_variables'][0]].values
+        self.out_mean = self.train_data_scaler['xarray_feature_center']['data_vars'][self.cfg_train['target_variables'][0]]['data']
+        self.out_std = self.train_data_scaler['xarray_feature_scale']['data_vars'][self.cfg_train['target_variables'][0]]['data']
 
         self.input_mean = []
-        self.input_mean.extend([self.train_data_scaler['xarray_feature_center'][x].values for x in self.cfg_train['dynamic_inputs']])
+        self.input_mean.extend([self.train_data_scaler['xarray_feature_center']['data_vars'][x]['data'] for x in self.cfg_train['dynamic_inputs']])
         self.input_mean.extend([self.train_data_scaler['attribute_means'][x] for x in self.cfg_train['static_attributes']])
         self.input_mean = np.array(self.input_mean)
 
         self.input_std = []
-        self.input_std.extend([self.train_data_scaler['xarray_feature_scale'][x].values for x in self.cfg_train['dynamic_inputs']])
+        self.input_std.extend([self.train_data_scaler['xarray_feature_scale']['data_vars'][x]['data'] for x in self.cfg_train['dynamic_inputs']])
         self.input_std.extend([self.train_data_scaler['attribute_stds'][x] for x in self.cfg_train['static_attributes']]) 
         self.input_std = np.array(self.input_std)
 
