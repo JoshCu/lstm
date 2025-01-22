@@ -447,7 +447,7 @@ class bmi_LSTM(Bmi):
     #------------------------------------------------------------ 
     def scale_output(self):
 
-        if self.cfg_train['target_variables'][0] == 'qobs_mm_per_hour':
+        if self.cfg_train['target_variables'][0] in ['qobs_mm_per_hour','QObs(mm/h)']:
             self.surface_runoff_mm = (self.lstm_output[0,0,0].numpy().tolist() * self.out_std + self.out_mean)
 
         elif self.cfg_train['target_variables'][0] == 'QObs(mm/d)':
