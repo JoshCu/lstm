@@ -200,8 +200,8 @@ class bmi_LSTM(Bmi):
         for var_name in list(self._var_name_units_map.keys()):
             # ---------- All the variables are single values ------------------#
             # ---------- so just set to zero for now.        ------------------#
-            self._values[var_name] = 0
-            setattr( self, var_name, 0 )
+            self._values[var_name] = 0.0
+            setattr( self, var_name, 0.0 )
         
         # -------------- Read in the BMI configuration -------------------------#
         # This will direct all the next moves.
